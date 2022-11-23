@@ -25,7 +25,7 @@ class Crawler():
 			soup = BeautifulSoup(response.content, 'html.parser')
 
 			# save page content for next step
-			crawled_texts.append(soup.get_text(separator=" "))
+			crawled_texts.append({'url': current_link, 'text': soup.get_text(separator=" ")})
 
 			# add links on site to pending links
 			for a in soup.find_all('a', href=True):
@@ -42,4 +42,10 @@ class Crawler():
 					continue
 				pending_links.append(link)
 			count += 1 # TODO: Remove count
+		"""
+			[
+				{'url': 'www.url.de', 'text': 'Foo Bar Baz.'},
+				{'url': 'www.url.de', 'text': 'Foo Bar Baz.'}
+			]
+		"""
 		return crawled_texts
