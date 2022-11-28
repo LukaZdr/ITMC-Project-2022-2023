@@ -10,5 +10,6 @@ create table chunks(
 	text							varchar not null,
 	paragraph_count		int not null,
 	chunk_count				int not null,
+	embedding					bytea,
 	constraint chunck_unique unique (url, paragraph_count, chunk_count)
 );
