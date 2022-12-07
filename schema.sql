@@ -11,5 +11,6 @@ create table chunks(
 	paragraph_count		int not null,
 	chunk_count				int not null,
 	embedding					bytea,
-	constraint chunck_unique unique (url, paragraph_count, chunk_count)
+	constraint chunck_unique unique (url, paragraph_count, chunk_count),
+	constraint text_unique unique (text)
 );

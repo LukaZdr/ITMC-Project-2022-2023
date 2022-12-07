@@ -15,6 +15,7 @@ class Transformer():
 	def __init__(self):
 		self.chunk_count = 1
 		self.transformed_texts = []
+		self.max_sentences = 1
 
 	def __add_too_result(self, url, paragraph_count, text):
 		self.transformed_texts.append({'url': url,
@@ -29,16 +30,16 @@ class Transformer():
 			self.chunk_count = 1
 			sentences = sent_tokenize(paragraph['text'])
 			# paragraph is small enough
-			if len(sentences) < 4:
+			if len(sentences) <= self.max_sentences:
 				self.__add_too_result(paragraph['url'],
 															paragraph['paragraph_count'],
 															paragraph['text'])
 			# paragraph has to be split
 			else:
-				while len(sentences) > 3:
-					first_tentence = sentences.pop(0)
-					second_and_third_sentence = sentences[0:2]
-					chunk = ' '.join([first_tentence] + second_and_third_sentence)
+				while len(sentences) > self.max_sentences:
+					head_sentence = sentences.pop(0)
+					tail_sentences = sentences[0:self.max_sentences-1]
+					chunk = ' '.join([head_sentence] + tail_sentences)
 					self.__add_too_result(paragraph['url'],
 																paragraph['paragraph_count'],
 																chunk)
