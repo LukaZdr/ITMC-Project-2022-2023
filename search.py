@@ -1,30 +1,37 @@
 import psycopg2, pickle
+from encoder_flair import EncoderFlair
 from encoder import Encoder
 from sklearn.metrics.pairwise import cosine_similarity
 from sentence_transformers import util
+
+# setup
+result_count = 5
 
 # Connect to database
 conn = psycopg2.connect("dbname='postgres' user='postgres' host='127.0.0.1' password='pw' port='5432'")
 cur = conn.cursor()
 
 encoder = Encoder()
-sentence = ['Was ist ein webfeed']
+sentence = ['wer hat HTML entwickelt?']
 search_embedding = encoder.run(sentence)[0]
 
-current_max_score = 0
-winner_id = -1
+similarities = []
 
 cur.execute(f'select id, embedding from chunks')
 for id, byte_embedding in cur.fetchall():
 		embedding = pickle.loads(byte_embedding)
 		cosine_scores = util.pytorch_cos_sim(embedding, search_embedding)
 		score = cosine_scores.numpy()[0][0]
-		if score > current_max_score:
-			current_max_score = score
-			winner_id = id
+		similarities.append((id, embedding, score))
 
-print(current_max_score)
-print(winner_id)
+similarities.sort(key=lambda a: a[2], reverse=True)
+top_x_results = similarities[:result_count]
+
+for id, embedding, score in top_x_results:
+	print(id, score)
+
+
+
 
 # print(cosine_similarity(list,list))
 

@@ -3,6 +3,7 @@ import numpy as np
 from psycopg2 import sql
 from crawler import Crawler
 from encoder import Encoder
+from encoder_flair import EncoderFlair
 from transformer import Transformer
 from preprocessor import Preprocessor
 
@@ -45,7 +46,7 @@ print('Saving encoding for documents')
 # > encode the sentences
 encoder = Encoder()
 
-# # > get texts from db
+# > get texts from db
 cur.execute('select id, text from chunks')
 chunks = cur.fetchall()
 
@@ -62,6 +63,15 @@ for id, text in chunks:
 		conn.commit()
 conn.commit()
 
+## TEST IF PICKELING WORKS IN DB
+# from sentence_transformers import util
+# cur.execute(f'select embedding from chunks where id={1} and embedding is not null limit 1')
+# b = cur.fetchall()
+# for byte_embedding in b:
+# 		embedding = pickle.loads(byte_embedding[0])
+# 		cosine_scores = util.pytorch_cos_sim(embedding, a_embedding)
+# 		print(cosine_scores)
+
 # > cluster
 # load all clusters from db
 cur.execute(f'select id, embedding from chunks')
@@ -69,16 +79,16 @@ byte_embeddings = cur.fetchall()
 document_vectors = np.array(list(map(lambda x: pickle.loads(x[1]).numpy()[0], byte_embeddings)))
 
 # k means version
-from sklearn.cluster import KMeans
-kmeans = KMeans(n_clusters=20, random_state=0).fit(document_vectors)
-# kmeans.labels_
-print(kmeans.cluster_centers_)
+# from sklearn.cluster import KMeans
+# kmeans = KMeans(n_clusters=20, random_state=0).fit(document_vectors)
+# # kmeans.labels_
+# print(kmeans.cluster_centers_)
 
-# find vector in db
-for id, byte_embedding in byte_embeddings:
-	db_vector = pickle.loads(byte_embedding).numpy()[0]
-	if db_vector in kmeans.cluster_centers_:
-		print(id)
+# # find vector in db
+# for id, byte_embedding in byte_embeddings:
+# 	db_vector = pickle.loads(byte_embedding).numpy()[0]
+# 	if db_vector in kmeans.cluster_centers_:
+# 		print(id)
 
 # Db scan version
 from sklearn.cluster import DBSCAN

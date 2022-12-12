@@ -15,7 +15,7 @@ class Transformer():
 	def __init__(self):
 		self.chunk_count = 1
 		self.transformed_texts = []
-		self.max_sentences = 1
+		self.max_sentences = 2
 
 	def __add_too_result(self, url, paragraph_count, text):
 		self.transformed_texts.append({'url': url,

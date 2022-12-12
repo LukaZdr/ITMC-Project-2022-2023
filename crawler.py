@@ -4,7 +4,7 @@ import requests
 from urllib.parse import urlparse
 
 class Crawler():
-	def __accepted_toplevel_domain(self, link, whitelist_domains):
+	def __accepted_domain(self, link, whitelist_domains):
 		for whitelist_domain in whitelist_domains:
 			if link.startswith(whitelist_domain):
 				return True
@@ -35,7 +35,7 @@ class Crawler():
 					domain = urlparse(current_link).netloc
 					link = 'https://' + domain + link
 				# only if link has the same toplevel domain
-				if not self.__accepted_toplevel_domain(link, whitelist_domains):
+				if not self.__accepted_domain(link, whitelist_domains):
 					continue
 				# only if link is not seen or pending links
 				if link in pending_links or link in seen_links:
