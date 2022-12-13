@@ -43,7 +43,6 @@ for chunk in transformed_texts:
 		conn.commit()
 conn.commit()
 
-# Data mining
 print('Saving encoding for documents')
 # > encode the sentences
 encoder = Encoder()
@@ -65,6 +64,7 @@ for id, text in chunks:
 		conn.commit()
 conn.commit()
 
+# Data mining
 # > cluster
 clusterer = Clusterer()
 clusterer.run()
