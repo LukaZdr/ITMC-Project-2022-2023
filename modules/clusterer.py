@@ -1,7 +1,7 @@
 import numpy as np
 import pickle, psycopg2
 from sklearn.cluster import KMeans
-from searcher import Searcher
+from modules.searcher import Searcher
 
 class Clusterer():
   def __init__(self, algorithm='kmeans'):
@@ -19,7 +19,6 @@ class Clusterer():
 
     # cluster
     kmeans = KMeans(n_clusters=20, random_state=0).fit(embeddings)
-    print(kmeans.cluster_centers_)
 
     # find vector in db
     for index, cluster_embedding in enumerate(kmeans.cluster_centers_):

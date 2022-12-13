@@ -1,5 +1,5 @@
 import psycopg2, pickle
-from encoder import Encoder
+from modules.encoder import Encoder
 from sentence_transformers import util
 
 class Searcher():

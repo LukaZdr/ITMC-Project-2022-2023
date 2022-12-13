@@ -4,13 +4,18 @@ import requests
 from urllib.parse import urlparse
 
 class Crawler():
-	def __accepted_domain(self, link, whitelist_domains):
-		for whitelist_domain in whitelist_domains:
-			if link.startswith(whitelist_domain):
-				return True
+	def __accepted_domain(self, link, whitelist_domains, subdomain_whitelist):
+		if subdomain_whitelist == None:
+			for whitelist_domain in whitelist_domains:
+				if link.startswith(whitelist_domain):
+					return True
+		else:
+			for whitelist_subdomain in subdomain_whitelist:
+				if link.startswith(whitelist_subdomain):
+					return True
 		return False
 
-	def run(self, seed_urls):
+	def run(self, seed_urls, subdomain_whitelist=None):
 		# setup
 		pending_links = seed_urls # needs to see all the seed files
 		seen_links = []
@@ -35,7 +40,7 @@ class Crawler():
 					domain = urlparse(current_link).netloc
 					link = 'https://' + domain + link
 				# only if link has the same toplevel domain
-				if not self.__accepted_domain(link, whitelist_domains):
+				if not self.__accepted_domain(link, whitelist_domains, subdomain_whitelist):
 					continue
 				# only if link is not seen or pending links
 				if link in pending_links or link in seen_links:
