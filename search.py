@@ -1,4 +1,4 @@
-from searcher import Searcher
+from modules.searcher import Searcher
 
 searcher = Searcher()
 results = searcher.run('Was ist WWW?')
